@@ -77,8 +77,10 @@ install_gnparser = function(version = 'latest', force = FALSE) {
 
   files = if (is_windows()) {
     download_file('win', '.zip')
+  } else if (is_macos_arm64()) {
+    download_file("-mac-arm64", '.tar.gz')
   } else if (is_macos()) {
-    download_file("mac", '.tar.gz')
+    download_file("-mac", '.tar.gz')
   } else {
     download_file('linux', '.tar.gz')
   }
@@ -112,7 +114,8 @@ install_gnparser_bin = function(exec) {
 }
 
 is_windows <- function() .Platform$OS.type == "windows"
-is_macos <- function() unname(Sys.info()["sysname"] == "Darwin")
+is_macos_arm64 <- function() unname(Sys.info()["sysname"] == "Darwin") && unname(Sys.info()["machine"] == "arm64")
+is_macos <- function() unname(Sys.info()["sysname"] == "Darwin") && unname(Sys.info()["machine"] != "arm64")
 is_linux <- function() unname(Sys.info()["sysname"] == "Linux")
 dir_exists <- function(x) utils::file_test("-d", x)
 pkg_file = function(..., mustWork = TRUE) {
